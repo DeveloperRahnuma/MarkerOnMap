@@ -5,23 +5,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.locationexperiment.databinding.ActivityMapsBinding
 import com.example.locationexperiment.domain.model.PlaceInformation
-import com.example.locationexperiment.presentation.MapData
 import com.example.locationexperiment.presentation.MapViewModel
-import com.example.locationexperiment.presentation.fregment.AddPhotoBottomDialogFragment
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -29,13 +24,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.gms.maps.model.PolylineOptions
-import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
 
 @AndroidEntryPoint
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -44,14 +35,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     lateinit var mFusedLocationClient: FusedLocationProviderClient
-    // Coordinates of a park nearby
-    private var destinationLatitude: Double = 28.548651
-    private var destinationLongitude: Double = 77.278610
+
     private var apiKey : String = ""
+
     // Current location is set to India, this will be of no use
     var currentLocation: LatLng = LatLng(20.5, 78.9)
-
-    lateinit var addPhotoBottomDialogFragment : AddPhotoBottomDialogFragment
 
     lateinit var mapViewModel : MapViewModel
 
@@ -62,12 +50,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         setContentView(binding.root)
 
         mapViewModel = ViewModelProvider(this).get(MapViewModel::class.java)
-
-        // Fetching API_KEY which we wrapped
-        val ai: ApplicationInfo = applicationContext.packageManager
-            .getApplicationInfo(applicationContext.packageName, PackageManager.GET_META_DATA)
-        val value = ai.metaData["com.google.android.geo.API_KEY"]
-        apiKey = value.toString()
 
         // Initializing fused location client
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -94,20 +76,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         if (checkPermissions()) {
             if (isLocationEnabled()){
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                    println("Task "  + task)
                         val location: Location? = task.result
                         if (location == null) {
                             requestNewLocationData()
                         } else {
                             currentLocation = LatLng(location.latitude, location.longitude)
                             mMap.clear()
-                            mMap.addMarker(MarkerOptions().position(currentLocation))
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
-                        val destinationLocation = LatLng(destinationLatitude, destinationLongitude)
-                        mMap.addMarker(MarkerOptions().position(destinationLocation))
-                        val urll = getDirectionURL(currentLocation, destinationLocation, apiKey)
-                        GetDirection(urll).execute()
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
                         }
                     }
 
@@ -117,19 +92,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun getAddressURL(dest:LatLng, secret: String) : String{
-        return "https://maps.googleapis.com/maps/api/geocode/json?latlng=${dest.latitude},${dest.longitude}&key=$secret"
-    }
-    private fun getDirectionURL(origin:LatLng, dest:LatLng, secret: String) : String{
-
-        return "https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}" +
-                "&destination=${dest.latitude},${dest.longitude}" +
-                "&sensor=false" +
-                "&mode=driving" +
-                "&key=$secret"
-    }
-    // Get current location, if shifted
-    // from previous location
+    // Get current location, if shifted  from previous location
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         val mLocationRequest = LocationRequest()
@@ -138,12 +101,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mLocationRequest.fastestInterval = 0
         mLocationRequest.numUpdates = 1
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mFusedLocationClient.requestLocationUpdates(
-            mLocationRequest, mLocationCallback,
-            Looper.myLooper()
-        )
-
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper())
     }
+
     // function to check if GPS is on
     private fun isLocationEnabled(): Boolean {
         val locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -151,6 +111,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             LocationManager.NETWORK_PROVIDER
         )
     }
+
     // If current location could not be located, use last location
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
@@ -158,6 +119,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             currentLocation = LatLng(mLastLocation?.latitude, mLastLocation?.longitude)
         }
     }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -174,8 +136,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             openBottomSheet("${point.latitude.toString()},${point.longitude.toString()}")
             val touchedPlace = LatLng(point.latitude, point.longitude)
             mMap.addMarker(MarkerOptions().position(touchedPlace))
-            val urll = getAddressURL(point, apiKey)
-            GetAddress(urll).execute()
         }
         mMap.setOnMarkerClickListener {
             Toast.makeText(applicationContext, "Click On Marker", Toast.LENGTH_LONG).show()
@@ -183,11 +143,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         getLastLocation()
     }
-    fun setMarketOnMap(currentLocation: Location){
-        val sydney = LatLng(currentLocation.latitude, currentLocation.longitude)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
-    }
+
     // Check if location permissions are
     // granted to the application
     private fun checkPermissions(): Boolean {
@@ -198,13 +154,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         return false
     }
+
     // Request permissions if not granted before
     private fun requestPermissions() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
-            pERMISSION_ID
-        )
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), pERMISSION_ID)
     }
 
     // What must happen when permission is granted
@@ -216,102 +169,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
-    @SuppressLint("StaticFieldLeak")
-    private inner class GetDirection(val url : String) : AsyncTask<Void, Void, List<List<LatLng>>>(){
-        override fun doInBackground(vararg params: Void?): List<List<LatLng>> {
-            val client = OkHttpClient()
-            val request = Request.Builder().url(url).build()
-            val response = client.newCall(request).execute()
-            val data = response.body!!.string()
 
-            val result =  ArrayList<List<LatLng>>()
-            try{
-                val respObj = Gson().fromJson(data, MapData::class.java)
-                val path =  ArrayList<LatLng>()
-                for (i in 0 until respObj.routes[0].legs[0].steps.size){
-                    path.addAll(decodePolyline(respObj.routes[0].legs[0].steps[i].polyline.points))
-                }
-                result.add(path)
-            }catch (e:Exception){
-                e.printStackTrace()
-            }
-            return result
-        }
 
-        override fun onPostExecute(result: List<List<LatLng>>) {
-            val lineoption = PolylineOptions()
-            for (i in result.indices){
-                lineoption.addAll(result[i])
-                lineoption.width(10f)
-                lineoption.color(Color.GREEN)
-                lineoption.geodesic(true)
-            }
-            mMap.addPolyline(lineoption)
-        }
-    }
-    @SuppressLint("StaticFieldLeak")
-    private inner class GetAddress(val url : String) : AsyncTask<Void, Void, String>(){
-        override fun doInBackground(vararg params: Void?): String {
-            val client = OkHttpClient()
-            val request = Request.Builder().url(url).build()
-            val response = client.newCall(request).execute()
-            val data = response.body!!.string()
-            return data
-        }
-
-        override fun onPostExecute(result: String) {
-            Toast.makeText(applicationContext,"GetAddress "+result,Toast.LENGTH_LONG).show()
-        }
-    }
-    fun decodePolyline(encoded: String): List<LatLng> {
-        val poly = ArrayList<LatLng>()
-        var index = 0
-        val len = encoded.length
-        var lat = 0
-        var lng = 0
-        while (index < len) {
-            var b: Int
-            var shift = 0
-            var result = 0
-            do {
-                b = encoded[index++].code - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlat = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lat += dlat
-            shift = 0
-            result = 0
-            do {
-                b = encoded[index++].code - 63
-                result = result or (b and 0x1f shl shift)
-                shift += 5
-            } while (b >= 0x20)
-            val dlng = if (result and 1 != 0) (result shr 1).inv() else result shr 1
-            lng += dlng
-            val latLng = LatLng((lat.toDouble() / 1E5),(lng.toDouble() / 1E5))
-            poly.add(latLng)
-        }
-        return poly
-    }
-
-    fun openBottomSheet(coordinate : String){
+    private fun openBottomSheet(coordinate : String){
         binding.bottomFormInclude.propertyAddressValue.setText(coordinate.toString())
         binding.bottomFormContainer.visibility = View.VISIBLE
         binding.centerButtonClick.setImageResource(R.drawable.close_48)
     }
 
 
-    fun placeMarkerOnCenterOfScreen(){
+    private fun placeMarkerOnCenterOfScreen(){
         val lat  = mMap.cameraPosition.target.latitude
         val long = mMap.cameraPosition.target.longitude
         currentLocation = LatLng(lat, long)
         mMap.clear()
         mMap.addMarker(MarkerOptions().position(currentLocation))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
-
         openBottomSheet("${lat},${long}")
-
     }
 
     private fun validatePropertyInfo(){
@@ -324,7 +198,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun enterPropertyDetailIntoDB(){
         GlobalScope.launch {
-            mapViewModel?.savePlaceInDB(PlaceInformation(propertyName = binding.bottomFormInclude.propertyNameValue.text.toString(), propertyCoordinate = binding.bottomFormInclude.propertyNameValue.text.toString()))
+            mapViewModel.savePlaceInDB(PlaceInformation(propertyName = binding.bottomFormInclude.propertyNameValue.text.toString(), propertyCoordinate = binding.bottomFormInclude.propertyNameValue.text.toString()))
         }
     }
 
