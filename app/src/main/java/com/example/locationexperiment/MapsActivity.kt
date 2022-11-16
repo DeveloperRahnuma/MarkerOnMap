@@ -107,7 +107,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         mMap.addMarker(MarkerOptions().position(destinationLocation))
                         val urll = getDirectionURL(currentLocation, destinationLocation, apiKey)
                         GetDirection(urll).execute()
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 14F))
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
                         }
                     }
 
@@ -169,13 +169,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
         mMap.setOnMapClickListener { point ->
             openBottomSheet("${point.latitude.toString()},${point.longitude.toString()}")
-            Toast.makeText(
-                applicationContext,
-                "latitude " + point.latitude + " longitude " + point.longitude,
-                Toast.LENGTH_LONG
-            ).show()
             val touchedPlace = LatLng(point.latitude, point.longitude)
             mMap.addMarker(MarkerOptions().position(touchedPlace))
             val urll = getAddressURL(point, apiKey)
