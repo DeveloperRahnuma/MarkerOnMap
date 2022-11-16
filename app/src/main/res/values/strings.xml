@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">LocationExperiment</string>
+    <string name="title_activity_maps">MapsActivity</string>
+
+    <string name="property_name">Property Name</string>
+    <string name="property_coordinate">Property Coordinate</string>
+    <string name="submit_button">Submit</string>
+
+
+</resources>
