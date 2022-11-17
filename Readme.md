@@ -46,6 +46,9 @@ Google Map Implementation   |  Market on center on click  | multiple market add 
     
     4 -> different layout for potrait or ladscape orientation ( design for make app look more cool )
 
+    5 -> click on button make map zoom too and that sometime it take time to load the map ( time depend on various factor
+         test google map key is also one of the reason )
+
 
 ## Point Out Issue
 I used the hilt for DI and according to rule view model instance get in activity with this
