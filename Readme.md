@@ -2,6 +2,7 @@
 Android Studio project on kotlin + XML ( jetpack compose support will added later )
 
 ## App flow video
+https://user-images.githubusercontent.com/31402470/202429506-c11dd280-39d1-4f91-8d31-b6d08bcbc822.mp4
 
 
 ### To run this project on your device Please Use
