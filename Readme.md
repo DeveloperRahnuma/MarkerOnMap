@@ -21,8 +21,8 @@ Potrait layout   |  Ladscape Layout
 ### Third-party libraries used in the project
 
     Dependency Injection -> Dagger Hilt
-    For Server Call -> Retrofit
     Architecture -> Mvvm
+   
 
 ## Screenshot Of App by functionality 
 Google Map Implementation   |  Market on center on click  | multiple market add when click on map | different landscape ui 
