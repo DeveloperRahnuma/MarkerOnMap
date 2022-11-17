@@ -20,9 +20,9 @@ Android Studio project on kotlin + XML ( jetpack compose support will added late
     Architecture -> Mvvm
 
 ## Screenshot Of App by functionality 
-Loading Screen             |  Animated Search Bar   | Images Display In Grid View  | Images Display In List View
+Google Map Implementation   |  Market on center on click  | multiple market add when click on map | different landscape ui 
 :-------------------------:|:-------------------------: | :-------------------------: | :-------------------------:
-![](https://user-images.githubusercontent.com/31402470/202423875-73886848-c9e9-432a-ae5f-37a7ef311637.png)  |  ![](https://user-images.githubusercontent.com/31402470/202423886-2bd8e3ee-da6c-4a59-83a0-a6bbfb21bacc.png) | ![](https://user-images.githubusercontent.com/31402470/202425012-2015f887-2961-42e0-9072-75ed5a16e82f.png) | ![](https://user-images.githubusercontent.com/31402470/202425030-b963f1f3-32be-42d9-92a2-89af2d776407.png)
+![](https://user-images.githubusercontent.com/31402470/202425030-b963f1f3-32be-42d9-92a2-89af2d776407.png) | ![](https://user-images.githubusercontent.com/31402470/202425012-2015f887-2961-42e0-9072-75ed5a16e82f.png) | ![](https://user-images.githubusercontent.com/31402470/202423875-73886848-c9e9-432a-ae5f-37a7ef311637.png)  |  ![](https://user-images.githubusercontent.com/31402470/202423886-2bd8e3ee-da6c-4a59-83a0-a6bbfb21bacc.png) | 
 
 
 ## The feature will Implemented in Future (For future reference)
