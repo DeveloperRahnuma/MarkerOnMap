@@ -8,6 +8,8 @@ import javax.inject.Inject
 
 class PropertyDetailsImpl @Inject constructor(private val coordinateDataBase: CoordinateDataBase): PropertyDetails {
 
+    // this function will called save data on database
+    // PropertyDetails interface implemented here
     override suspend fun setPlaceInformation(placeInformation: PlaceInformation) {
         coordinateDataBase.dao.insertProperty(placeInformation.toPlaceInformationEntity())
     }

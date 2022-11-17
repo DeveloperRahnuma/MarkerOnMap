@@ -24,30 +24,43 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private val pERMISSION_ID = 42
+    // used for get runtime permission for access location
+    private val permissionId = 42
+
+    // used for make map instance globule and its initialise in onMapReady
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityMapsBinding
     lateinit var mFusedLocationClient: FusedLocationProviderClient
 
-    private var apiKey : String = ""
+    //ActivityMainBinding generated from xml file name
+    //That's bind with this activity to display content here
+    private lateinit var binding: ActivityMapsBinding
 
-    // Current location is set to India, this will be of no use
+    // Current location is set to India, this will be of no use just for a demo data set
     var currentLocation: LatLng = LatLng(20.5, 78.9)
 
+    // view model instance it should be provided by hilt but hilt current version
+    // have some issue so
+    // viewModel: MainViewModel? by viewmodel()
+    // not working
     private lateinit var mapViewModel : MapViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //ActivityMainBinding generated from xml file name
+        //That's bind with this activity to display content here
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Getting an instance of viewmodel here and why we are creating an instance like this
+        //Explained up the side where ViewModel declared
         mapViewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         // Initializing fused location client
@@ -58,6 +71,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         binding.centerButtonClick.setOnClickListener {
+            // if form visible means user already click and marker are placed on screen
+            // so user have to clear that marker otherwise add one
             if(binding.bottomFormContainer.visibility == View.VISIBLE){
                 whenFromVisible()
             }else{
@@ -69,7 +84,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             validatePropertyInfo()
         }
     }
-    // Get current location
+
+    // Get current location and set zoom level if get location otherwise try to new one
     @SuppressLint("MissingPermission")
     private fun getLastLocation() {
         if (checkPermissions()) {
@@ -90,6 +106,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             requestPermissions()
         }
     }
+
 
     // Get current location, if shifted  from previous location
     @SuppressLint("MissingPermission")
@@ -158,13 +175,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     // Request permissions if not granted before
     private fun requestPermissions() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), pERMISSION_ID)
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), permissionId)
     }
 
     // What must happen when permission is granted
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == pERMISSION_ID) {
+        if (requestCode == permissionId) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 getLastLocation()
             }
@@ -172,13 +189,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+    //for open bottom sheet when use click on floating action button
     private fun openBottomSheet(coordinate : String){
         binding.bottomFormInclude.propertyAddressValue.setText(coordinate.toString())
+        binding.bottomFormInclude.propertyNameValue.setText("")
         binding.bottomFormContainer.visibility = View.VISIBLE
         binding.centerButtonClick.setImageResource(R.drawable.close_48)
     }
 
 
+    // this function will place marker on center of screen
+    // for that we are using mMap.cameraPosition.target
     private fun placeMarkerOnCenterOfScreen(){
         val lat  = mMap.cameraPosition.target.latitude
         val long = mMap.cameraPosition.target.longitude
@@ -189,8 +210,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         openBottomSheet("${lat},${long}")
     }
 
+    // check if user enter data in property name only because property data will added
+    // automatically
     private fun validatePropertyInfo(){
         if(binding.bottomFormInclude.propertyNameValue.text.isNotEmpty() && binding.bottomFormInclude.propertyAddressValue.text.isNotEmpty()){
+           // if name is entered save the detail in room database
             enterPropertyDetailIntoDB()
             Toast.makeText(this, "Data Enter successfully Into Database",Toast.LENGTH_LONG).show()
         }else{
@@ -198,12 +222,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    // enter data on defult thread and using GlobalScope you can use life scope that will run with activity
     private fun enterPropertyDetailIntoDB(){
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.Default) {
             mapViewModel.savePlaceInDB(PlaceInformation(propertyName = binding.bottomFormInclude.propertyNameValue.text.toString(), propertyCoordinate = binding.bottomFormInclude.propertyNameValue.text.toString()))
         }
     }
 
+    //if there form already visible on screen, clear marker and coordinate vale and close
+    // that form also
     private fun whenFromVisible(){
         mMap.clear()
         binding.bottomFormInclude.propertyAddressValue.setText("")
@@ -212,6 +239,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onBackPressed() {
+        //if there is bottom sheet visible for user first close it otherwise
+        // distroy the activity
         if(binding.bottomFormContainer.visibility == View.VISIBLE){
             binding.bottomFormContainer.visibility = View.GONE
         }else{
