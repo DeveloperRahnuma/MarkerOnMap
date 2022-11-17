@@ -192,6 +192,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun validatePropertyInfo(){
         if(binding.bottomFormInclude.propertyNameValue.text.isNotEmpty() && binding.bottomFormInclude.propertyAddressValue.text.isNotEmpty()){
             enterPropertyDetailIntoDB()
+            Toast.makeText(this, "Data Enter successfully Into Database",Toast.LENGTH_LONG).show()
         }else{
             Toast.makeText(this, " please enter property name to save",Toast.LENGTH_LONG).show()
         }
