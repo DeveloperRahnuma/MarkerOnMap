@@ -2,7 +2,8 @@
 Android Studio project on kotlin + XML ( jetpack compose support will added later )
 
 ## App flow video
-https://user-images.githubusercontent.com/31402470/201424619-db933dd5-0d43-4f55-b79a-7a3fdecdbe3a.mov
+
+
 
 ### To run this project on your device Please Use
 
@@ -21,7 +22,7 @@ https://user-images.githubusercontent.com/31402470/201424619-db933dd5-0d43-4f55-
 ## Screenshot Of App by functionality 
 Loading Screen             |  Animated Search Bar   | Images Display In Grid View  | Images Display In List View
 :-------------------------:|:-------------------------: | :-------------------------: | :-------------------------:
-![](https://user-images.githubusercontent.com/31402470/201425388-f0596a7e-6f2b-46bf-ac33-0b1b02896699.png)  |  ![](https://user-images.githubusercontent.com/31402470/201425394-b103f162-1306-430d-9c97-1c0f75e23424.png) | ![](https://user-images.githubusercontent.com/31402470/201425400-59b9123a-50ab-43c2-a6cc-05df30a0efb7.png) | ![](https://user-images.githubusercontent.com/31402470/201425405-d0b4a259-3abb-487a-8444-ba4eef192822.png)
+![](https://user-images.githubusercontent.com/31402470/202423875-73886848-c9e9-432a-ae5f-37a7ef311637.png)  |  ![](https://user-images.githubusercontent.com/31402470/202423886-2bd8e3ee-da6c-4a59-83a0-a6bbfb21bacc.png) | ![](https://user-images.githubusercontent.com/31402470/202424404-1851d1e0-2c54-4322-8c9a-10313bf0b6a7.png) | ![](https://user-images.githubusercontent.com/31402470/202424388-5afe3366-f23d-48a1-b81e-091d8faf436f.png)
 
 
 ## The feature will Implemented in Future (For future reference)
