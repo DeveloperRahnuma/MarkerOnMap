@@ -4,7 +4,6 @@ Android Studio project on kotlin + XML ( jetpack compose support will added late
 ## App flow video
 
 
-
 ### To run this project on your device Please Use
 
     Android Studio Chipmunk | 2021.2.1 Patch 1
@@ -27,23 +26,20 @@ Google Map Implementation   |  Market on center on click  | multiple market add 
 
 ## The feature will Implemented in Future (For future reference)
     Add Splash Screen
-    Add Shimmer Effect On Loading
-    Add Suggestion From Search History
-    Add Debence on search
-    improve View Quality
+    route draw on two place
+
+
+## Clarification on some point so don't commit as bug
+    1-> click on map anywhere will add marker there so if user click multiple place one marker
+    will add on each place that's part of feature.
+
+    2-> clear on cross button when form is visible and you can see coordinate of center
+    position of screeen will clear coordinate value and close the form also.
+
 
 ## Point Out Issue
-Current time and date in the app is not well formatted
-For example - API response has json key timeAndDate with value 1667790933
-While trying to convert it to date format it through the error Unpassable date: "1667790933"
-so for now (displaying only string as it is returned from the API)
-
-
-
 I used the hilt for DI and according to rule view model instance get in activity with this
 ViewModel: MainViewModel? By viewmodel () but its not working that is at issue with hilt used version
 That's why I have to make the instance of view model in below way
 
     viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
-For some result total number of images show null, that's because the API has that result
