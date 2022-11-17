@@ -56,3 +56,6 @@ ViewModel: MainViewModel? By viewmodel () but its not working that is at issue w
 That's why I have to make the instance of view model in below way
 
     viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+No handle situation when user deny permisson from outside ( means first accept the
+permission and then disable it from setting) 

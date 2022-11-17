@@ -147,7 +147,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        // for loading map in satellite view remove this will load map in map view
         mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+
+        // map will load with the mark where is user mobile location ( must need to gps open )
+        mMap.isMyLocationEnabled = true
+
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 27.0f ))
 
         mMap.setOnMapClickListener { point ->
             openBottomSheet("${point.latitude.toString()},${point.longitude.toString()}")
