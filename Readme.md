@@ -36,6 +36,8 @@ Google Map Implementation   |  Market on center on click  | multiple market add 
 
     2-> clear on cross button when form is visible and you can see coordinate of center
     position of screeen will clear coordinate value and close the form also.
+    
+    3 -> click on close button will clear all the marker in one click
 
 
 ## Point Out Issue
