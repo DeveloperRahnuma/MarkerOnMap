@@ -1,4 +1,4 @@
-package com.example.locationexperiment.presentation
+package com.example.locationexperiment
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

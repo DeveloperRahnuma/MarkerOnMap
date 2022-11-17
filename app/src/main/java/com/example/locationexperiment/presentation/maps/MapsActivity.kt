@@ -1,9 +1,8 @@
-package com.example.locationexperiment
+package com.example.locationexperiment.presentation.maps
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -14,9 +13,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProvider
+import com.example.locationexperiment.R
 import com.example.locationexperiment.databinding.ActivityMapsBinding
 import com.example.locationexperiment.domain.model.PlaceInformation
-import com.example.locationexperiment.presentation.MapViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -41,7 +40,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     // Current location is set to India, this will be of no use
     var currentLocation: LatLng = LatLng(20.5, 78.9)
 
-    lateinit var mapViewModel : MapViewModel
+    private lateinit var mapViewModel : MapViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +81,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         } else {
                             currentLocation = LatLng(location.latitude, location.longitude)
                             mMap.clear()
-                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 14F))
                         }
                     }
 
@@ -132,6 +131,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
+
         mMap.setOnMapClickListener { point ->
             openBottomSheet("${point.latitude.toString()},${point.longitude.toString()}")
             val touchedPlace = LatLng(point.latitude, point.longitude)
@@ -141,6 +141,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             Toast.makeText(applicationContext, "Click On Marker", Toast.LENGTH_LONG).show()
             false
         }
+
         getLastLocation()
     }
 
@@ -184,7 +185,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         currentLocation = LatLng(lat, long)
         mMap.clear()
         mMap.addMarker(MarkerOptions().position(currentLocation))
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 14F))
         openBottomSheet("${lat},${long}")
     }
 

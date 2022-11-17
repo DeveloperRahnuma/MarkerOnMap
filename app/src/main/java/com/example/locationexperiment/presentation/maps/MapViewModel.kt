@@ -1,4 +1,4 @@
-package com.example.locationexperiment.presentation
+package com.example.locationexperiment.presentation.maps
 
 import androidx.lifecycle.ViewModel
 import com.example.locationexperiment.domain.model.PlaceInformation
