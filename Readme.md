@@ -4,6 +4,11 @@ Android Studio project on kotlin + XML ( jetpack compose support will added late
 ## App flow video
 https://user-images.githubusercontent.com/31402470/202429506-c11dd280-39d1-4f91-8d31-b6d08bcbc822.mp4
 
+## Different Layout for landscap and potrait 
+Potrait layout   |  Ladscape Layout 
+:-------------------------:|:-------------------------: 
+![](https://user-images.githubusercontent.com/31402470/202425012-2015f887-2961-42e0-9072-75ed5a16e82f.png) |  ![](https://user-images.githubusercontent.com/31402470/202423886-2bd8e3ee-da6c-4a59-83a0-a6bbfb21bacc.png) | 
+
 
 ### To run this project on your device Please Use
 
