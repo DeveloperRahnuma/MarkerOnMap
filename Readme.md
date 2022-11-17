@@ -43,6 +43,8 @@ Google Map Implementation   |  Market on center on click  | multiple market add 
     position of screeen will clear coordinate value and close the form also.
     
     3 -> click on close button will clear all the marker in one click
+    
+    4 -> different layout for potrait or ladscape orientation ( design for make app look more cool )
 
 
 ## Point Out Issue
